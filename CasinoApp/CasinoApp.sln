@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32505.173
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CasinoApp", "CasinoApp\CasinoApp.vcxproj", "{03BC7BDC-B6C7-492F-AE7B-02E4022682D3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CasinoAppTests", "CasinoAppTests\CasinoAppTests.vcxproj", "{0560A14B-87BF-4AA8-8F9F-2AB0E5AC5CB1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{03BC7BDC-B6C7-492F-AE7B-02E4022682D3}.Release|x64.Build.0 = Release|x64
 		{03BC7BDC-B6C7-492F-AE7B-02E4022682D3}.Release|x86.ActiveCfg = Release|Win32
 		{03BC7BDC-B6C7-492F-AE7B-02E4022682D3}.Release|x86.Build.0 = Release|Win32
+		{0560A14B-87BF-4AA8-8F9F-2AB0E5AC5CB1}.Debug|x64.ActiveCfg = Debug|x64
+		{0560A14B-87BF-4AA8-8F9F-2AB0E5AC5CB1}.Debug|x64.Build.0 = Debug|x64
+		{0560A14B-87BF-4AA8-8F9F-2AB0E5AC5CB1}.Debug|x86.ActiveCfg = Debug|Win32
+		{0560A14B-87BF-4AA8-8F9F-2AB0E5AC5CB1}.Debug|x86.Build.0 = Debug|Win32
+		{0560A14B-87BF-4AA8-8F9F-2AB0E5AC5CB1}.Release|x64.ActiveCfg = Release|x64
+		{0560A14B-87BF-4AA8-8F9F-2AB0E5AC5CB1}.Release|x64.Build.0 = Release|x64
+		{0560A14B-87BF-4AA8-8F9F-2AB0E5AC5CB1}.Release|x86.ActiveCfg = Release|Win32
+		{0560A14B-87BF-4AA8-8F9F-2AB0E5AC5CB1}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

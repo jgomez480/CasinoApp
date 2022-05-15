@@ -5,6 +5,9 @@ using std::cout;
 using std::cin;
 using std::endl;
 
+/// <summary>
+/// Initates blackjack game. Conducted via I/O operations with user.
+/// </summary>
 void PlayBlackjack()
 {
     cout << "Welcome To Blackjack\n";
@@ -126,6 +129,12 @@ void PlayBlackjack()
     }
 }
 
+/// <summary>
+/// Gets integer value of all cards in hand.
+/// Note: Blackjack rules, Face cards = 10, Ace = 11
+/// </summary>
+/// <param name="hand"> - Hand object to count values from</param>
+/// <returns>Total value of cards</returns>
 int GetHandValue(Hand hand) {
     Card current;
     int current_val;
@@ -146,11 +155,20 @@ int GetHandValue(Hand hand) {
     return total;
 }
 
+/// <summary>
+/// Grabs card from deck and places into hand
+/// </summary>
+/// <param name="deck"> - Deck to pull cards from</param>
+/// <param name="hand"> - Hand to place new card into</param>
 void Hit(Deck &deck, Hand &hand) {
     Card new_card = deck.GetNextCard();
     hand.AddCard(new_card);
 }
 
+/// <summary>
+/// Prints out all cards in a given hand separated by commas
+/// </summary>
+/// <param name="hand"> - Hand to print</param>
 void DisplayHand(Hand hand) {
     if (hand.cards_size == 0) {
         cout << "No Hand";

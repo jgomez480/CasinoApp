@@ -20,9 +20,10 @@ enum Value {
 
 class Card {
 
-public:
 	int suit;
 	int value;
+
+public:
 
 	Card() {
 		suit = 0;
@@ -36,6 +37,14 @@ public:
 
 	int GetValue() {
 		return value;
+	}
+
+	int GetSuit() {
+		return suit;
+	}
+
+	bool Equals(Card card) {
+		return suit == card.suit && value == card.value;
 	}
 
 	std::string ToString() {
@@ -128,7 +137,7 @@ public:
 	Card GetNextCard() {
 		Card result = cards[next_card_index];
 		next_card_index++;
-		if (next_card_index > MAX_CARDS) {
+		if (next_card_index >= MAX_CARDS) {
 			next_card_index = 0;
 		}
 
