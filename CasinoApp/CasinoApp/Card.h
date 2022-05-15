@@ -47,6 +47,10 @@ public:
 		return suit == card.suit && value == card.value;
 	}
 
+	bool Equals(int inputSuit, int inputValue) {
+		return suit == inputSuit && value == inputValue;
+	}
+
 	std::string ToString() {
 
 		std::string suit_str;
@@ -83,6 +87,7 @@ public:
 			value_str = "Ace";
 			break;
 		default:
+			// Convert int valule to string
 			std::stringstream temp_str;
 			temp_str << value;
 			temp_str >> value_str;
@@ -90,8 +95,6 @@ public:
 		}
 
 		return (value_str + " of " + suit_str);
-
-		std::cout << value_str + " of " + suit_str << std::endl;
 	}
 };
 
@@ -99,7 +102,7 @@ class Hand {
 public:
 	Card* cards;
 	int max;
-	int cards_size = 0;
+	int size = 0;
 
 	Hand(int max_cards) {
 		max = max_cards;
@@ -107,14 +110,14 @@ public:
 	}
 
 	void AddCard(Card card) {
-		cards[cards_size] = card;
-		cards_size++;
+		cards[size] = card;
+		size++;
 	}
 
 	bool Contains(int suit, int value) {
-		for (int i = 0; i < cards_size; i++) {
-			if (cards[cards_size].GetSuit() == suit 
-			 && cards[cards_size].GetValue() == value) {
+		for (int i = 0; i < size; i++) {
+			if (cards[size].GetSuit() == suit
+				&& cards[size].GetValue() == value) {
 				return true;
 			}
 		}
@@ -122,8 +125,8 @@ public:
 	}
 
 	bool Contains(int value) {
-		for (int i = 0; i < cards_size; i++) {
-			if (cards[cards_size].GetValue() == value) {
+		for (int i = 0; i < size; i++) {
+			if (cards[size].GetValue() == value) {
 				return true;
 			}
 		}
@@ -133,7 +136,38 @@ public:
 	void ClearHand() {
 		delete[] cards;
 		cards = new Card[max];
-		cards_size = 0;
+		size = 0;
+	}
+
+	bool Remove(int suit, int value) {
+		bool removed = false;
+		for (int i = 0; i < size; i++) {
+			if (cards[i].GetSuit() == suit
+				&& cards[i].GetValue() == value) {
+				removed = true;
+				size--;
+			}
+
+			if (removed) {
+				cards[i] = cards[i + 1];
+			}
+		}
+		return removed;
+	}
+
+	bool Remove(Card card) {
+		bool removed = false;
+		for (int i = 0; i < size; i++) {
+			if (card.Equals(cards[i])) {
+				removed = true;
+				size--;
+			}
+
+			if (removed) {
+				cards[i] = cards[i + 1];
+			}
+		}
+		return removed;
 	}
 };
 
@@ -170,8 +204,6 @@ public:
 	}
 
 	void Shuffle() {
-		std::cout << "Shuffling..." << std::endl;
-
 		int first_index, second_index;
 		Card temp_card;
 
