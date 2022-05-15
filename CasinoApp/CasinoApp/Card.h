@@ -110,6 +110,31 @@ public:
 		cards[cards_size] = card;
 		cards_size++;
 	}
+
+	bool Contains(int suit, int value) {
+		for (int i = 0; i < cards_size; i++) {
+			if (cards[cards_size].GetSuit() == suit 
+			 && cards[cards_size].GetValue() == value) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool Contains(int value) {
+		for (int i = 0; i < cards_size; i++) {
+			if (cards[cards_size].GetValue() == value) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	void ClearHand() {
+		delete[] cards;
+		cards = new Card[max];
+		cards_size = 0;
+	}
 };
 
 

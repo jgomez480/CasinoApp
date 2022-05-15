@@ -1,4 +1,9 @@
 #include <iostream>
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#include <unistd.h>
+#endif
 #include "Blackjack.h"
 
 using std::cout;
@@ -18,7 +23,7 @@ void PlayBlackjack()
     int shuffle_mark = 4;
     bool playing = true;
     bool can_split, can_double_down;
-
+    int dealer_hand_value;
 
     // The highest possible number of that can be held
     const int max_hand_cards = 12;
@@ -87,6 +92,33 @@ void PlayBlackjack()
                 break;
             case 's':
                 cout << "Stand" << endl;
+
+                DisplayHand(dealer_hand);
+                dealer_hand_value = GetHandValue(dealer_hand);
+                cout << "Dealer Total: " << dealer_hand_value << endl;
+
+
+                while (dealer_hand_value < 17 || (dealer_hand_value == 17 && !dealer_hand.Contains(ace))) {
+                    cout << "Dealer Hitting..." << endl;
+                    Sleep(1000);
+                    Hit(main_deck, dealer_hand);
+                    DisplayHand(dealer_hand);
+                    dealer_hand_value = GetHandValue(dealer_hand);
+                    cout << "Dealer Total: " << dealer_hand_value << endl;
+                }
+                
+                if (dealer_hand_value > 21) {
+                    cout << "Dealer Busts! You Win!" << endl;
+                }
+                else if (dealer_hand_value > player_hand_value) {
+                    cout << "House Wins!" << endl;
+                }
+                else if (dealer_hand_value < player_hand_value) {
+                    cout << "You Win!" << endl;
+                }
+                else {
+                    cout << "Tie!" << endl;
+                }
                 game_in_progress = false;
                 break;
             case 'd':
@@ -126,6 +158,9 @@ void PlayBlackjack()
         if (again == 'N' || again == 'n') {
             playing = false;
         }
+
+        player_hand.ClearHand();
+        dealer_hand.ClearHand();
     }
 }
 
