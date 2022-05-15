@@ -34,9 +34,11 @@ public:
 		this->value = value;
 	}
 
+	int GetValue() {
+		return value;
+	}
 
-
-	void ToString() {
+	std::string ToString() {
 
 		std::string suit_str;
 		switch (suit) {
@@ -78,20 +80,39 @@ public:
 			break;
 		}
 
+		return (value_str + " of " + suit_str);
+
 		std::cout << value_str + " of " + suit_str << std::endl;
+	}
+};
+
+class Hand {
+public:
+	Card* cards;
+	int max;
+	int cards_size = 0;
+
+	Hand(int max_cards) {
+		max = max_cards;
+		cards = new Card[max];
+	}
+
+	void AddCard(Card card) {
+		cards[cards_size] = card;
+		cards_size++;
 	}
 };
 
 
 
 class Deck {
+	// Constants
 	static const int MAX_CARDS = 52;
 	static const int MAX_SUITS = 4;
 	static const int MIN_VALUES = 2;
 	static const int MAX_VALUES = 14;
 
 	int next_card_index = 0;
-
 	Card cards[MAX_CARDS];
 
 public:
@@ -123,8 +144,6 @@ public:
 		for (int count = 0; count < 100; count++) {
 			first_index = rand() % MAX_CARDS;
 			second_index = rand() % MAX_CARDS;
-
-			std::cout << "First " << first_index << " Second " << second_index << std::endl;
 
 			temp_card = cards[first_index];
 			cards[first_index] = cards[second_index];
