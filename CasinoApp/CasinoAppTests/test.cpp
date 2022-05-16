@@ -102,3 +102,29 @@ TEST(DeckTest, DeckShuffle) {
 		pulled_card = new_deck.GetNextCard();
 	}
 };
+
+TEST(HandTest, HandInitalization) {
+	Hand new_hand = Hand(10);
+	EXPECT_EQ(new_hand.size, 0);
+	EXPECT_EQ(new_hand.max, 10);
+	for (int i = 0; i < 10; i++) {
+		EXPECT_EQ(new_hand.cards[i].GetSuit(), 0);
+		EXPECT_EQ(new_hand.cards[i].GetValue(), 0);
+	}
+
+	new_hand = Hand(25);
+	EXPECT_EQ(new_hand.size, 0);
+	EXPECT_EQ(new_hand.max, 25);
+	for (int i = 0; i < 25; i++) {
+		EXPECT_EQ(new_hand.cards[i].GetSuit(), 0);
+		EXPECT_EQ(new_hand.cards[i].GetValue(), 0);
+	}
+
+	new_hand = Hand(100);
+	EXPECT_EQ(new_hand.size, 0);
+	EXPECT_EQ(new_hand.max, 100);
+	for (int i = 0; i < 100; i++) {
+		EXPECT_EQ(new_hand.cards[i].GetSuit(), 0);
+		EXPECT_EQ(new_hand.cards[i].GetValue(), 0);
+	}
+};

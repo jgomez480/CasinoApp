@@ -400,7 +400,7 @@ void PlayerHit(BlackjackVars& game_vars) {
 }
 
 /// <summary>
-/// Logic for split action. Sets variables to use second split hand object. Hits new card for both hands
+/// Logic for split action. 
 /// </summary>
 /// <param name="game_vars">BlackjackVars - All game variables required in struct</param>
 void Split(BlackjackVars& game_vars) {
@@ -408,15 +408,19 @@ void Split(BlackjackVars& game_vars) {
     Hand& player = *game_vars.player;
     Hand& split = *game_vars.split;
 
+    // Set vars for split
     game_vars.can_split = false;
     game_vars.has_split = true;
 
+    // Separate hands
     split.AddCard(player.cards[1]);
     player.Remove(player.cards[1]);
 
+    // Draw new card for each hand
     Hit(deck, player);
     Hit(deck, split);
 
+    // Print new hands
     cout << "Current Cards Status" << endl;
     cout << "First Hand: ";
     DisplayHand(player);
