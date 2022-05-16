@@ -1,9 +1,5 @@
 #include <iostream>
-#ifdef _WIN32
 #include <Windows.h>
-#else
-#include <unistd.h>
-#endif
 #include "Blackjack.h"
 
 using std::cout;
@@ -18,32 +14,42 @@ void PlayBlackjack()
     cout << "Welcome To Blackjack\n";
     cout << "==========================\n";
 
-    Deck main_deck = Deck();
-    int play_counter = 0;
-    int shuffle_mark = 4;
-    bool playing = true;
-    bool can_split, can_double_down;
-    int dealer_hand_value;
-
     // The highest possible number of that can be held
     const int max_hand_cards = 12;
 
+    Deck main_deck = Deck(true);
     Hand dealer_hand = Hand(max_hand_cards);
     Hand player_hand = Hand(max_hand_cards);
     Hand split_hand = Hand(max_hand_cards);
-    bool split = false;
+
+    BlackjackVars game_vars = {
+        &main_deck,
+        &dealer_hand,
+        &player_hand,
+        &split_hand,
+    };
+
+    int play_counter = 0;
+    int shuffle_mark = 4;
+    int player_hand_value, dealer_hand_value;
+    bool playing = true;
+    bool invalid;
+    char action;
 
     while (playing) {
-        can_double_down = true;
-        can_split = false;
-        split = false;
+        game_vars.game_in_progress = true;
+        game_vars.can_double_down = true;
+        game_vars.can_split = false;
+        game_vars.has_split = false;
+        game_vars.first_hand = true;
+        
+        
 
-        main_deck.ToString();
         cout << endl;
-        main_deck.Shuffle();
-        std::cout << "Shuffling..." << std::endl;
-        main_deck.ToString();
-
+        if (play_counter % shuffle_mark == 0) {
+            main_deck.Shuffle();
+            std::cout << "Shuffling..." << std::endl;
+        }
         
         Hit(main_deck, dealer_hand);
         Hit(main_deck, dealer_hand);
@@ -55,44 +61,40 @@ void PlayBlackjack()
 
         cout << endl;
         if (player_hand.cards[0].GetValue() == player_hand.cards[1].GetValue()) {
-            can_split = true;
+            game_vars.can_split = true;
         }
 
-        bool game_in_progress = true;
-        bool invalid;
-        int player_hand_value;
-        while (game_in_progress) {
+        while (game_vars.game_in_progress) {
             invalid = false;
-            char action;
 
             cout << "\nPlayer:\n";
-            if (split) {
-                DisplayHand(split_hand);
-                player_hand_value = GetHandValue(split_hand);
-            }
-            else {
+            if (game_vars.first_hand) {
                 DisplayHand(player_hand);
                 player_hand_value = GetHandValue(player_hand);
+            }
+            else {
+                DisplayHand(split_hand);
+                player_hand_value = GetHandValue(split_hand);
             }
 
             cout << "Total: " << player_hand_value << endl;
             if (player_hand_value > 21) {
                 cout << "Bust!" << endl;
-                if (split) {
-                    split = false;
-                    can_double_down = true;
+                if (game_vars.has_split) {
+                    game_vars.has_split = false;
+                    game_vars.can_double_down = true;
                 }
                 else {
-                    game_in_progress = false;
+                    game_vars.game_in_progress = false;
                 }
                 break;
             }
             
             cout << "Enter action (h = hit, s = stand";
-            if (can_double_down) {
+            if (game_vars.can_double_down) {
                 cout << ", d = double down";
             }
-            if (can_split) {
+            if (game_vars.can_split) {
                 cout << ", x = split";
             }
             cout << "): ";
@@ -102,80 +104,25 @@ void PlayBlackjack()
             switch (action) {
             case 'h':
                 cout << "Hit!" << endl;
-                can_double_down = false;
-
-                if (split) {
-                    Hit(main_deck, split_hand);
-                }
-                else {
-                    Hit(main_deck, player_hand);
-                }
+                PlayerHit(game_vars);   
                 break;
             case 's':
-                cout << "Stand\n" << endl;
-
-                DisplayHand(dealer_hand);
-                dealer_hand_value = GetHandValue(dealer_hand);
-                cout << "Dealer Total: " << dealer_hand_value << endl;
-
-                while (dealer_hand_value < 17 || (dealer_hand_value == 17 && dealer_hand.Contains(ace))) {
-                    cout << "Dealer Hitting..." << endl;
-                    Sleep(1000);
-                    Hit(main_deck, dealer_hand);
-                    DisplayHand(dealer_hand);
-                    dealer_hand_value = GetHandValue(dealer_hand);
-                    cout << "Dealer Total: " << dealer_hand_value << endl;
-                }
-                
-                if (dealer_hand_value > 21) {
-                    cout << "Dealer Busts! You Win!" << endl;
-                }
-                else if (dealer_hand_value > player_hand_value) {
-                    cout << "House Wins!" << endl;
-                }
-                else if (dealer_hand_value < player_hand_value) {
-                    cout << "You Win!" << endl;
-                }
-                else {
-                    cout << "Push!" << endl;
-                }
-
-                if (split) {
-                    split = false;
-                    can_double_down = true;
-                }
-                else {
-                    game_in_progress = false;
-                }
+                cout << "Stand" << endl;
+                Stand(game_vars);
                 break;
             case 'd':
-                if (can_double_down) {
+                if (game_vars.can_double_down) {
                     cout << "Double Down!" << endl;
-                    can_double_down = false;
-                    if (split) {
-                        Hit(main_deck, split_hand);
-                    }
-                    else {
-                        Hit(main_deck, player_hand);
-                    }
+                    DoubleDown(game_vars);
                 }
                 else {
                     invalid = true;
                 }
                 break;
             case 'x':
-                if (can_split) {
+                if (game_vars.can_split) {
                     cout << "Split!" << endl;
-                    split = true;
-                    split_hand.AddCard(player_hand.cards[1]);
-                    player_hand.Remove(player_hand.cards[1]);
-                    Hit(main_deck, player_hand);
-                    Hit(main_deck, split_hand);
-                    cout << "Current Cards Status" << endl;
-                    cout << "First Hand: ";
-                    DisplayHand(player_hand);
-                    cout << "Second Hand: ";
-                    DisplayHand(split_hand);
+                    Split(game_vars);
                 }
                 else {
                     invalid = true;
@@ -191,7 +138,7 @@ void PlayBlackjack()
             }
         }
 
-
+        play_counter++;
 
         char again;
         cout << "Play Again? (y/n): ";
@@ -202,8 +149,140 @@ void PlayBlackjack()
         }
 
         player_hand.ClearHand();
+        split_hand.ClearHand();
         dealer_hand.ClearHand();
     }
+}
+
+void DoubleDown(BlackjackVars& game_vars) {
+    Deck& deck = *game_vars.deck;
+    Hand& player = *game_vars.player;
+    Hand& split = *game_vars.split;
+    int player_hand_value;
+    game_vars.can_double_down = false;
+    if (game_vars.first_hand) {
+        Hit(deck, player);
+        DisplayHand(player);
+        player_hand_value = GetHandValue(player);
+    }
+    else {
+        Hit(deck, split);
+        DisplayHand(split);
+        player_hand_value = GetHandValue(split);
+    }
+    cout << "Total: " << player_hand_value << endl;
+
+    if (game_vars.has_split && game_vars.first_hand) {
+        game_vars.first_hand = false;
+    }
+    else {
+        EndRound(game_vars);
+    }
+}
+
+void Split(BlackjackVars& game_vars) {
+    Deck& deck = *game_vars.deck;
+    Hand& player = *game_vars.player;
+    Hand& split = *game_vars.split;
+    game_vars.can_split = false;
+    game_vars.has_split = true;
+    split.AddCard(player.cards[1]);
+    player.Remove(player.cards[1]);
+    Hit(deck, player);
+    Hit(deck, split);
+    cout << "Current Cards Status" << endl;
+    cout << "First Hand: ";
+    DisplayHand(player);
+    cout << "Second Hand: ";
+    DisplayHand(split);
+}
+
+void Stand(BlackjackVars& game_vars) {
+    if (game_vars.has_split && game_vars.first_hand) {
+        game_vars.first_hand = false;
+    }
+    else {
+        EndRound(game_vars);
+    }
+}
+
+void EndRound(BlackjackVars& game_vars) {
+
+    Deck& deck = *game_vars.deck;
+    Hand& dealer = *game_vars.dealer;
+    Hand& player = *game_vars.player;
+    Hand& split = *game_vars.split;
+
+    cout << endl;
+
+    DisplayHand(dealer);
+    int dealer_value, player_value;
+
+    dealer_value = GetHandValue(dealer);
+    cout << "Dealer Total: " << dealer_value << endl;
+
+    while (dealer_value < 17 || (dealer_value == 17 && dealer.Contains(ace))) {
+        cout << "Dealer Hitting..." << endl;
+        Sleep(1000);
+        Hit(deck, dealer);
+        DisplayHand(dealer);
+        dealer_value = GetHandValue(dealer);
+        cout << "Dealer Total: " << dealer_value << endl;
+    }
+
+    player_value = GetHandValue(player);
+    if (game_vars.has_split) {
+        cout << "First Hand: ";
+        CheckHands(dealer_value, player_value);
+        cout << "Second Hand: "; 
+        player_value = GetHandValue(split);
+        CheckHands(dealer_value, player_value);
+    }
+    else {
+        CheckHands(dealer_value, player_value);
+    }
+
+    if (game_vars.has_split) {
+        game_vars.has_split = false;
+        game_vars.can_double_down = true;
+    }
+
+    game_vars.game_in_progress = false;
+}
+
+void CheckHands(int dealer_value, int player_value) {
+    if (player_value > 21) {
+        cout << "Bust!" << endl;
+    }
+    else if (dealer_value > 21) {
+        cout << "Dealer Busts! You Win!" << endl;
+    }
+    else if (dealer_value > player_value) {
+        cout << "House Wins!" << endl;
+    }
+    else if (dealer_value < player_value) {
+        if (player_value == 21) {
+            cout << "Blackjack!" << endl;
+        }
+        else {
+            cout << "You Win!" << endl;
+        }
+    }
+    else {
+        cout << "Push!" << endl;
+    }
+}
+
+bool IsBlackjack(Hand& hand) {
+    return GetHandValue(hand) == 21;
+}
+
+bool IsBust(Hand& hand) {
+    return GetHandValue(hand) > 21;
+}
+
+bool IsPush(Hand& first_hand, Hand& second_hand) {
+    return GetHandValue(first_hand) == GetHandValue(second_hand);
 }
 
 /// <summary>
@@ -212,7 +291,7 @@ void PlayBlackjack()
 /// </summary>
 /// <param name="hand"> - Hand object to count values from</param>
 /// <returns>Total value of cards</returns>
-int GetHandValue(Hand hand) {
+int GetHandValue(Hand& hand) {
     Card current;
     int current_val;
     int total = 0;
@@ -242,11 +321,57 @@ void Hit(Deck &deck, Hand &hand) {
     hand.AddCard(new_card);
 }
 
+void PlayerHit(BlackjackVars& game_vars) {
+    Deck& deck = *game_vars.deck;
+    Hand& player = *game_vars.player;
+    Hand& split = *game_vars.split;
+    int player_hand_value;
+
+    game_vars.can_double_down = false;
+    game_vars.can_split = false;
+
+    if (game_vars.first_hand) {
+        Hit(deck, player);
+        DisplayHand(player);
+        if (IsBlackjack(player) || IsBust(player)) {
+            cout << "Total: " << GetHandValue(player) << endl;
+            if (!game_vars.has_split) {
+                EndRound(game_vars);
+            }
+            else {
+                game_vars.first_hand = false;
+            }
+        }
+    }
+    else {
+        Hit(deck, split);
+        if (IsBlackjack(split) || IsBust(split)) {
+            cout << "Total: " << GetHandValue(split) << endl;
+            EndRound(game_vars);
+            game_vars.game_in_progress = false;
+        }
+    }
+}
+
+void DealerHit(BlackjackVars& game_vars) {
+    Deck& deck = *game_vars.deck;
+    Hand& dealer = *game_vars.dealer;
+    int dealer_value = GetHandValue(dealer);
+    while (dealer_value < 17 || (dealer_value == 17 && dealer.Contains(ace))) {
+        cout << "Dealer Hitting..." << endl;
+        Sleep(1000);
+        Hit(deck, dealer);
+        DisplayHand(dealer);
+        dealer_value = GetHandValue(dealer);
+        cout << "Dealer Total: " << dealer_value << endl;
+    }
+}
+
 /// <summary>
 /// Prints out all cards in a given hand separated by commas
 /// </summary>
 /// <param name="hand"> - Hand to print</param>
-void DisplayHand(Hand hand) {
+void DisplayHand(Hand& hand) {
     if (hand.size == 0) {
         cout << "No Hand";
         return;

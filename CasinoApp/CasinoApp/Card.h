@@ -193,6 +193,15 @@ public:
 		}
 	}
 
+	Deck(bool yes) {
+		for (int i = 0; i < MAX_SUITS; i++) {
+			for (int j = MIN_VALUES; j <= MAX_VALUES; j++) {
+				Card newCard = Card(0, 8);
+				cards[i * (MAX_VALUES - MIN_VALUES) + (j - MIN_VALUES + i)] = newCard;
+			}
+		}
+	}
+
 	Card GetNextCard() {
 		Card result = cards[next_card_index];
 		next_card_index++;
