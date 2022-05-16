@@ -2,6 +2,7 @@
 
 #include "Card.h";
 
+// Datatypes
 struct BlackjackVars {
 	Deck* deck;
 	Hand* dealer;
@@ -17,9 +18,19 @@ struct BlackjackVars {
 // Function Prototypes
 void PlayBlackjack();
 
-void DoubleDown(BlackjackVars& game_vars);
+void CheckHands(int dealer_value, int player_value);
 
 void DisplayHand(Hand& hand);
+
+void DoubleDown(BlackjackVars& game_vars);
+
+void DealerHit(BlackjackVars& game_vars);
+
+void EndRound(BlackjackVars& game_vars);
+
+int GetHandValue(Hand& hand);
+
+void Hit(Deck& deck, Hand& hand);
 
 bool IsBlackjack(Hand& hand);
 
@@ -27,18 +38,8 @@ bool IsBust(Hand& hand);
 
 bool IsPush(Hand& first_hand, Hand& second_hand);
 
-void DealerHit(BlackjackVars& game_vars);
-
 void PlayerHit(BlackjackVars& game_vars);
 
-void Hit(Deck& deck, Hand& hand);
-
-void EndRound(BlackjackVars& game_vars);
+void Split(BlackjackVars& game_vars);
 
 void Stand(BlackjackVars& game_vars);
-
-void CheckHands(int dealer_value, int player_value);
-
-int GetHandValue(Hand& hand);
-
-void Split(BlackjackVars& game_vars);

@@ -43,14 +43,24 @@ public:
 		return suit;
 	}
 
+	/// <summary>
+	/// Returns result of whether card matches based on input card's values
+	/// </summary>
 	bool Equals(Card card) {
 		return suit == card.suit && value == card.value;
 	}
 
+	/// <summary>
+	/// Returns result of whether card matches input suit and value
+	/// </summary>
 	bool Equals(int inputSuit, int inputValue) {
 		return suit == inputSuit && value == inputValue;
 	}
 
+	/// <summary>
+	/// Converts values to string for display
+	/// </summary>
+	/// <returns>Converted string</returns>
 	std::string ToString() {
 
 		std::string suit_str;
@@ -109,11 +119,20 @@ public:
 		cards = new Card[max];
 	}
 
+	/// <summary>
+	/// Adds card to array
+	/// </summary>
+	/// <param name="card">Card - card object to add</param>
 	void AddCard(Card card) {
 		cards[size] = card;
 		size++;
 	}
 
+	/// <summary>
+	/// Returns boolean result of whether card array contains matching card
+	/// </summary>
+	/// <param name="suit">int - Suit to match</param>
+	/// <param name="value">int - Value to match</param>
 	bool Contains(int suit, int value) {
 		for (int i = 0; i < size; i++) {
 			if (cards[size].GetSuit() == suit
@@ -124,6 +143,10 @@ public:
 		return false;
 	}
 
+	/// <summary>
+	/// Returns boolean result of whether card array contains one matching value card
+	/// </summary>
+	/// <param name="value">int - Value to match</param>
 	bool Contains(int value) {
 		for (int i = 0; i < size; i++) {
 			if (cards[size].GetValue() == value) {
@@ -133,12 +156,21 @@ public:
 		return false;
 	}
 
+	/// <summary>
+	/// Clears card array
+	/// </summary>
 	void ClearHand() {
 		delete[] cards;
 		cards = new Card[max];
 		size = 0;
 	}
 
+	/// <summary>
+	/// Removes the first card if it exists from array based on matching input parameters
+	/// </summary>
+	/// <param name="suit">int - Suit of card</param>
+	/// <param name="value">int - Value of card</param>
+	/// <returns>Boolean result of operation success</returns>
 	bool Remove(int suit, int value) {
 		bool removed = false;
 		for (int i = 0; i < size; i++) {
@@ -155,6 +187,11 @@ public:
 		return removed;
 	}
 
+	/// <summary>
+	/// Removes parameter card from array if it exists
+	/// </summary>
+	/// <param name="card">Card - card object to remove</param>
+	/// <returns>Boolean result of operation success</returns>
 	bool Remove(Card card) {
 		bool removed = false;
 		for (int i = 0; i < size; i++) {
@@ -193,15 +230,9 @@ public:
 		}
 	}
 
-	Deck(bool yes) {
-		for (int i = 0; i < MAX_SUITS; i++) {
-			for (int j = MIN_VALUES; j <= MAX_VALUES; j++) {
-				Card newCard = Card(0, 8);
-				cards[i * (MAX_VALUES - MIN_VALUES) + (j - MIN_VALUES + i)] = newCard;
-			}
-		}
-	}
-
+	/// <summary>
+	/// Returns next card in deck
+	/// </summary>
 	Card GetNextCard() {
 		Card result = cards[next_card_index];
 		next_card_index++;
@@ -212,6 +243,9 @@ public:
 		return result;
 	}
 
+	/// <summary>
+	/// Shuffles deck
+	/// </summary>
 	void Shuffle() {
 		int first_index, second_index;
 		Card temp_card;
@@ -226,9 +260,12 @@ public:
 		}
 	}
 
+	/// <summary>
+	/// Prints all cards in deck
+	/// </summary>
 	void ToString() {
 		for (int i = 0; i < MAX_CARDS; i++) {
-			cards[i].ToString();
+			std::cout << cards[i].ToString() << std::endl;
 		}
 	}
 };
