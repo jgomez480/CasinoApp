@@ -39,13 +39,16 @@ void PlayBlackjack()
     bool invalid;
     char action;
 
+    int player_balance = 1000;
+    int bet_amount = 0;
+
     while (playing) {
         game_vars.game_in_progress = true;
-        game_vars.can_double_down = true;
+        game_vars.can_double_down = false;
         game_vars.can_split = false;
         game_vars.has_split = false;
         game_vars.first_hand = true;
-        
+
         cout << endl;
 
         // If multiple games have been played, will shuffle deck.
@@ -53,11 +56,29 @@ void PlayBlackjack()
             main_deck.Shuffle();
             std::cout << "Shuffling..." << std::endl;
         }
+
+        // Getting player's bet amount
+        cout << "Betting Balance: " << player_balance << endl;
+        bool invalid_bet = true;
+        while (invalid_bet) {
+            cout << "Enter bet: ";
+            cin >> bet_amount;
+
+            if (bet_amount > player_balance) {
+                cout << "Not enough balance. Try again" << endl;
+            }
+            else if (bet_amount <= 0) {
+                cout << "Invalid bet amount. Try again" << endl;
+            }
+            else {
+                invalid_bet = false;
+            }
+        }
         
         // Draw two cards for dealer
         Hit(main_deck, dealer_hand);
         Hit(main_deck, dealer_hand);
-        // Show dealer's cards
+        // Show dealer's up card
         cout << "\nDealer:\n";
         cout << dealer_hand.cards[0].ToString() << ", XXXXXXXX" << endl;
 
@@ -67,9 +88,13 @@ void PlayBlackjack()
 
         // Calculates whether player can split (same value cards)
         cout << endl;
-        if (player_hand.cards[0].GetValue() == player_hand.cards[1].GetValue()) {
-            game_vars.can_split = true;
+        if (player_balance >= bet_amount) {
+            game_vars.can_double_down = true;
+            if (player_hand.cards[0].GetValue() == player_hand.cards[1].GetValue()) {
+                game_vars.can_split = true;
+            }
         }
+
 
         while (game_vars.game_in_progress) {
             invalid = false;
