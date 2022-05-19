@@ -21,12 +21,18 @@
     <ClCompile Include="Blackjack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Roulette.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Card.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Blackjack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Roulette.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
